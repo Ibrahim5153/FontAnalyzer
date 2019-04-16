@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.View;
+import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -45,8 +46,8 @@ public class ScaningActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent, PICK_IMAGE_CAMERA);
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, PICK_IMAGE_CAMERA);
 
             }
         });
@@ -57,22 +58,31 @@ public class ScaningActivity extends AppCompatActivity {
     {
         if (requestCode == PICK_IMAGE_GALLERY) {
             //TODO: action
-
-            final Uri imageUri = data.getData();
-            final InputStream imageStream;
             try {
+                final Uri imageUri = data.getData();
+                final InputStream imageStream;
+
                 imageStream = getContentResolver().openInputStream(imageUri);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                Utility.saveBitmapToLocalStorage(selectedImage);
+                Intent intent = new Intent(this, FinalActivity.class);
+                intent.putExtra("img_path",Utility.saveBitmapToLocalStorage(selectedImage));
+                startActivity(intent);
 
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
+
         }else if(requestCode == PICK_IMAGE_CAMERA){
 
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            Utility.saveBitmapToLocalStorage(photo);
+            try {
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
+                Intent intent = new Intent(this, FinalActivity.class);
+                intent.putExtra("img_path",Utility.saveBitmapToLocalStorage(photo));
+                startActivity(intent);
+            }catch (Exception ex){
+
+            }
 
         }
     }
