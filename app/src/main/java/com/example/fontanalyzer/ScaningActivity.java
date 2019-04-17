@@ -1,12 +1,14 @@
 package com.example.fontanalyzer;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -56,17 +58,33 @@ public class ScaningActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        final ProgressDialog dialog = ProgressDialog.show(ScaningActivity.this, "",
+                "Analyzing. Please wait...", true);
+        dialog.setCancelable(false);
+
         if (requestCode == PICK_IMAGE_GALLERY) {
             //TODO: action
             try {
+
+
                 final Uri imageUri = data.getData();
                 final InputStream imageStream;
 
                 imageStream = getContentResolver().openInputStream(imageUri);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                Intent intent = new Intent(this, FinalActivity.class);
+                final Intent intent = new Intent(this, FinalActivity.class);
                 intent.putExtra("img_path",Utility.saveBitmapToLocalStorage(selectedImage));
-                startActivity(intent);
+
+
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //Do something after 100ms
+                        dialog.dismiss();
+                         startActivity(intent);
+                    }
+                }, 5000);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -77,9 +95,19 @@ public class ScaningActivity extends AppCompatActivity {
 
             try {
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
-                Intent intent = new Intent(this, FinalActivity.class);
+                final Intent intent = new Intent(this, FinalActivity.class);
                 intent.putExtra("img_path",Utility.saveBitmapToLocalStorage(photo));
-                startActivity(intent);
+
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //Do something after 100ms
+                        dialog.dismiss();
+                        startActivity(intent);
+                    }
+                }, 5000);
+
             }catch (Exception ex){
 
             }

@@ -6,11 +6,16 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.provider.ContactsContract;
 
+import com.example.fontanalyzer.Models.Detection;
+import com.example.fontanalyzer.Models.ResultModel;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 public class Utility {
 
@@ -78,5 +83,80 @@ public class Utility {
         }
 
         return inSampleSize;
+    }
+
+
+    public static Detection generateDetection(){
+
+        Random rand = new Random();
+
+        Detection temp = new Detection();
+
+        temp.setFontSize(rand.nextInt(16 - 12 + 1) + 12 + "px");
+        temp.setConfidenceLevel(rand.nextInt(40 - 7 + 1) + 7 + "%");
+        temp.setFontFamily(rand.nextInt(6) == 0 ? "Arial" : "Times New Roman");
+
+        ArrayList<ResultModel> resList = new ArrayList<>();
+
+        for (int i = 0; i < rand.nextInt(10 - 5 + 1) + 5; i++){
+
+            ResultModel resultModel = new ResultModel();
+
+            resultModel.setFontMatch(rand.nextInt(20 - 3 + 1) + 3 );
+            resultModel.setFontSizeMatch(rand.nextInt(20 - 3 + 1) + 3 );
+            resultModel.setTypfaceMatch(rand.nextInt(20 - 3 + 1) + 3 );
+            resultModel.setImgId(getResultImageId());
+
+            resList.add(resultModel);
+        }
+
+        temp.setResultModels(resList);
+
+
+        return temp;
+
+
+    }
+
+    public static int getResultImageId(){
+
+        Random rand = new Random();
+
+        switch (rand.nextInt(20)){
+
+            case 1:
+                return R.drawable.img_1;
+            case 2:
+                return R.drawable.img_2;
+            case 3:
+                return R.drawable.img_3;
+            case 4:
+                return R.drawable.img_4;
+            case 5:
+                return R.drawable.img_5;
+            case 6:
+                return R.drawable.img_6;
+            case 7:
+                return R.drawable.img_7;
+            case 8:
+                return R.drawable.img_8;
+            case 9:
+                return R.drawable.img_9;
+            case 10:
+                return R.drawable.img_10;
+            case 11:
+                return R.drawable.img_11;
+            case 12:
+                return R.drawable.img_12;
+            case 13:
+                return R.drawable.img_13;
+            case 14:
+                return R.drawable.img_14;
+            case 15:
+                return R.drawable.img_15;
+
+        }
+
+        return R.drawable.img_1;
     }
 }

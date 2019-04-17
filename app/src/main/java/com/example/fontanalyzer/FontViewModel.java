@@ -5,6 +5,7 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
+import com.example.fontanalyzer.Models.Detection;
 import com.example.fontanalyzer.Models.User;
 
 import java.util.List;
@@ -28,5 +29,15 @@ public class FontViewModel extends AndroidViewModel {
     public void insertUser(User user){
 
         mRepository.InsertUser(user);
+    }
+
+    public LiveData<Detection> getDetectionByContent(String content){
+
+        return  mRepository.getDetectionByContent(content);
+    }
+
+    public void insertDetection(Detection detection){
+
+        mRepository.InsertDetectionToDb(detection);
     }
 }

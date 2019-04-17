@@ -1,16 +1,25 @@
 package com.example.fontanalyzer;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
+import android.view.View;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.fontanalyzer.Models.Detection;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
@@ -20,15 +29,38 @@ public class FinalActivity extends AppCompatActivity {
     String impPath;
     ImageView mImageView;
     TextView contentTextView;
+    TextView fontSizeTv;
+    TextView fontTv;
+    TextView confidenceTv;
+    RecyclerView resRecyclerView;
+    Detection mDetection;
+    String mContent;
+    CardView notfoundCV;
+    CardView contentCV;
+    CardView resultsCV;
+
+    FontViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_final);
 
+        viewModel = ViewModelProviders.of(this).get(FontViewModel.class);
+
         impPath = getIntent().getStringExtra("img_path");
+
         mImageView = findViewById(R.id.main_image_view);
         contentTextView = findViewById(R.id.content_text_view);
+        resRecyclerView = findViewById(R.id.results_rec);
+        confidenceTv = findViewById(R.id.confidence_tv);
+        fontSizeTv = findViewById(R.id.font_size_tv);
+        fontTv = findViewById(R.id.font_tv);
+        notfoundCV = findViewById(R.id.notfound_cardView);
+        contentCV = findViewById(R.id.content_cv);
+        resultsCV = findViewById(R.id.result_cv);
+        recoginzeTextFromImage();
+
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.centerInside();
@@ -38,7 +70,6 @@ public class FinalActivity extends AppCompatActivity {
                 .load(impPath)
                 .into(mImageView);
 
-        recoginzeTextFromImage();
     }
 
     void recoginzeTextFromImage(){
@@ -71,6 +102,43 @@ public class FinalActivity extends AppCompatActivity {
             text += textBlock.getValue() + "\n";
 
         }
-        contentTextView.setText(text);
+
+        mContent = text;
+
+        if(text.equals("")){
+
+            resultsCV.setVisibility(View.GONE);
+            contentCV.setVisibility(View.GONE);
+            resRecyclerView.setVisibility(View.GONE);
+            notfoundCV.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        viewModel.getDetectionByContent(text).observe(this, new Observer<Detection>() {
+            @Override
+            public void onChanged(@Nullable Detection detection) {
+
+                if(detection != null){
+
+                    mDetection = detection;
+                }else {
+
+                    mDetection = Utility.generateDetection();
+                    mDetection.setImgPath(impPath);
+                    mDetection.setContent(mContent);
+                    viewModel.insertDetection(mDetection);
+                }
+
+
+                resRecyclerView.setAdapter(new ResultsRecAdapter(mDetection.getResultModels(),FinalActivity.this));
+                resRecyclerView.setLayoutManager(new LinearLayoutManager(FinalActivity.this,LinearLayoutManager.HORIZONTAL, false));
+                fontSizeTv.setText(mDetection.getFontSize());
+                fontTv.setText(mDetection.getFontFamily());
+                confidenceTv.setText(mDetection.getConfidenceLevel());
+                contentTextView.setText(mDetection.getContent());
+            }
+        });
     }
+
+
 }

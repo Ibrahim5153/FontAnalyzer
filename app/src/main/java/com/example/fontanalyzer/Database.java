@@ -8,14 +8,17 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
+import com.example.fontanalyzer.DAOs.IDetectionDAO;
 import com.example.fontanalyzer.DAOs.IUserDAO;
+import com.example.fontanalyzer.Models.Detection;
 import com.example.fontanalyzer.Models.User;
 
-@android.arch.persistence.room.Database(entities = {User.class}, version = 1, exportSchema = false)
+@android.arch.persistence.room.Database(entities = {User.class, Detection.class}, version = 1, exportSchema = false)
 public abstract class Database extends RoomDatabase {
 
 
     public abstract IUserDAO userDAO();
+    public abstract IDetectionDAO detectionDAO();
 
     private static volatile Database INSTANCE;
 
