@@ -13,6 +13,9 @@ import android.widget.Toast;
 
 import com.example.fontanalyzer.Models.User;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class RegisterActivity extends AppCompatActivity {
 
     TextView alreadyUserTv;
@@ -39,12 +42,14 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(emailet.getText().toString().equalsIgnoreCase("")){
+                if(!isValidEmailId(emailet.getText().toString()) ){
 
                     emailet.requestFocus();
                     emailet.setError("Enter valid email!");
                     return;
                 }
+
+
 
                 if(passwordet.getText().toString().equalsIgnoreCase("")){
 
@@ -114,5 +119,15 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private boolean isValidEmailId(String email){
+
+        Pattern pattern;
+        Matcher matcher;
+        final String EMAIL_PATTERN = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+        pattern = Pattern.compile(EMAIL_PATTERN);
+        matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 }

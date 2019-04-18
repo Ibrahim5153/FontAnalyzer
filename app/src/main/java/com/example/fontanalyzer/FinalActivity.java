@@ -12,7 +12,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +19,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.fontanalyzer.Models.Detection;
+import com.example.fontanalyzer.OpenCV.Opencv;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
@@ -89,7 +89,7 @@ public class FinalActivity extends AppCompatActivity {
         }
 
         Frame imageFrame = new Frame.Builder()
-                .setBitmap(Utility.decodeBitmapFromResource(impPath, 1000, 1000))
+                .setBitmap(Opencv.decodeBitmapFromResource(impPath, 1000, 1000))
                 .build();
 
         SparseArray<TextBlock> textBlocks = textRecognizer.detect(imageFrame);
@@ -123,7 +123,7 @@ public class FinalActivity extends AppCompatActivity {
                     mDetection = detection;
                 }else {
 
-                    mDetection = Utility.generateDetection();
+                    mDetection = Opencv.generateDetection();
                     mDetection.setImgPath(impPath);
                     mDetection.setContent(mContent);
                     viewModel.insertDetection(mDetection);

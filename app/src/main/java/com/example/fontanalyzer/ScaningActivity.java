@@ -1,18 +1,13 @@
 package com.example.fontanalyzer;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
@@ -21,17 +16,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
+
+import com.example.fontanalyzer.OpenCV.Opencv;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 
 public class ScaningActivity extends AppCompatActivity {
 
@@ -44,6 +36,8 @@ public class ScaningActivity extends AppCompatActivity {
     File imgFile;
 
     Toolbar toolbar;
+
+    ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,10 +67,10 @@ public class ScaningActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                ;//Uri.fromFile(new File(Utility.generateImagePath()));
+                ;//Uri.fromFile(new File(Opencv.generateImagePath()));
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 cameraIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                imgFile = new File(Utility.generateImagePath());
+                imgFile = new File(Opencv.generateImagePath());
                 cameraImgUri =  FileProvider.getUriForFile(ScaningActivity.this,
                         BuildConfig.APPLICATION_ID + ".provider",imgFile);
                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraImgUri);
@@ -89,7 +83,7 @@ public class ScaningActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        final ProgressDialog dialog = ProgressDialog.show(ScaningActivity.this, "",
+        dialog = ProgressDialog.show(ScaningActivity.this, "",
                 "Analyzing. Please wait...", true);
         dialog.setCancelable(false);
         final Intent intent = new Intent(this, FinalActivity.class);
@@ -103,7 +97,7 @@ public class ScaningActivity extends AppCompatActivity {
                 final InputStream imageStream;
                 //imageStream = getContentResolver().openInputStream(imageUri);
                 //final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                intent.putExtra("img_path",getRealPathFromURI_API19(this, imageUri));//Utility.saveBitmapToLocalStorage(selectedImage));
+                intent.putExtra("img_path",getRealPathFromURI_API19(this, imageUri));//Opencv.saveBitmapToLocalStorage(selectedImage));
 
 
                 final Handler handler = new Handler();
@@ -111,8 +105,9 @@ public class ScaningActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         //Do something after 100ms
-                        dialog.dismiss();
                          startActivity(intent);
+
+
                     }
                 }, 5000);
 
@@ -124,16 +119,22 @@ public class ScaningActivity extends AppCompatActivity {
         }else if(requestCode == PICK_IMAGE_CAMERA){
 
             try {
-                //Uri photo =  data.getData();
                 intent.putExtra("img_path", imgFile.getAbsolutePath());
+
+                if(!imgFile.exists()){
+
+                    dialog.dismiss();
+                    return;
+                }
 
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         //Do something after 100ms
-                        dialog.dismiss();
                         startActivity(intent);
+
+
                     }
                 }, 5000);
 
@@ -142,6 +143,13 @@ public class ScaningActivity extends AppCompatActivity {
             }
 
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(dialog != null)
+        dialog.dismiss();
     }
 
     public static String getRealPathFromURI_API19(Context context, Uri uri){

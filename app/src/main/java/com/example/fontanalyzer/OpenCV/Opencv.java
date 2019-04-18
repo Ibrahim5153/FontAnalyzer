@@ -1,4 +1,4 @@
-package com.example.fontanalyzer;
+package com.example.fontanalyzer.OpenCV;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -8,6 +8,7 @@ import android.provider.ContactsContract;
 
 import com.example.fontanalyzer.Models.Detection;
 import com.example.fontanalyzer.Models.ResultModel;
+import com.example.fontanalyzer.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,7 +18,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
-public class Utility {
+public class Opencv {
 
     public static String saveBitmapToLocalStorage(Bitmap bmp){
 
@@ -97,9 +98,9 @@ public class Utility {
 
         int fontProb = rand.nextInt(10);
         String font;
-        if(fontProb <= 6){
+        if(fontProb <= 4){
             font = "Times New Roman";
-        }else if(fontProb > 6 && fontProb <= 9){
+        }else if(fontProb > 4 && fontProb <= 9){
 
             font = "Unable to detect";
         }else {
@@ -172,5 +173,9 @@ public class Utility {
         }
 
         return R.drawable.img_1;
+    }
+
+    public static void fontAnalyzer(){
+
     }
 }
