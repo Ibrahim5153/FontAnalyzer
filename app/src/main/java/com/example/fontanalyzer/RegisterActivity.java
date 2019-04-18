@@ -40,12 +40,15 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if(emailet.getText().toString().equalsIgnoreCase("")){
+
+                    emailet.requestFocus();
                     emailet.setError("Enter valid email!");
                     return;
                 }
 
                 if(passwordet.getText().toString().equalsIgnoreCase("")){
 
+                    passwordet.requestFocus();
                     passwordet.setError("Please enter password!");
                     return;
 
@@ -53,6 +56,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 if(confirmPasswordet.getText().toString().equalsIgnoreCase("")){
 
+                    confirmPasswordet.requestFocus();
                     confirmPasswordet.setError("Please enter password!");
                     return;
 
@@ -60,6 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 if(!passwordet.getText().toString().equals(confirmPasswordet.getText().toString())){
 
+                    passwordet.requestFocus();
                     passwordet.setError("Password does not match!");
                     confirmPasswordet.setError("Password does not match!");
                     return;
@@ -75,6 +80,7 @@ public class RegisterActivity extends AppCompatActivity {
                             finish();
                         }else {
 
+                            emailet.requestFocus();
                             emailet.setError("User with this email already exist!");
                         }
                     }

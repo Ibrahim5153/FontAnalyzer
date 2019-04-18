@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -55,11 +56,22 @@ public class AuthActivity extends AppCompatActivity {
                         if(user != null){
 
                             if(passwordEt.getText().toString().equals(user.getPassword()))
+                            {
+                                SharedPreferences.Editor editor = getSharedPreferences("prefs", MODE_PRIVATE).edit();
+                                editor.putBoolean("logged_in", true);
+                                editor.apply();
+
                                 AuthActivity.this.startActivity(new Intent(AuthActivity.this, ScaningActivity.class));
-                            else
+                                finish();
+                            }
+                            else{
+
+                                passwordEt.requestFocus();
                                 passwordEt.setError("Wrong password!");
+                            }
                         }else {
 
+                            emailEt.requestFocus();
                             emailEt.setError("User not found!");
                         }
                     }

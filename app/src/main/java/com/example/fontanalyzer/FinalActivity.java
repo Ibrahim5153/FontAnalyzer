@@ -89,7 +89,7 @@ public class FinalActivity extends AppCompatActivity {
         }
 
         Frame imageFrame = new Frame.Builder()
-                .setBitmap(Utility.decodeBitmapFromResource(impPath, 2, 1000, 1000))
+                .setBitmap(Utility.decodeBitmapFromResource(impPath, 1000, 1000))
                 .build();
 
         SparseArray<TextBlock> textBlocks = textRecognizer.detect(imageFrame);

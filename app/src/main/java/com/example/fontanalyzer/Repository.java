@@ -9,6 +9,9 @@ import com.example.fontanalyzer.DAOs.IUserDAO;
 import com.example.fontanalyzer.Models.Detection;
 import com.example.fontanalyzer.Models.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Repository {
 
     private IUserDAO userDAO;
@@ -19,6 +22,11 @@ public class Repository {
         Database database = Database.getDatabase(application);
         this.userDAO = database.userDAO();
         this.detectionDAO = database.detectionDAO();
+    }
+
+    public  LiveData<List<Detection>> getAllDetection(){
+
+        return detectionDAO.getAllDetections();
     }
 
     public void InsertUser(User user){

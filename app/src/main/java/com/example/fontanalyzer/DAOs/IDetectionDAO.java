@@ -10,6 +10,9 @@ import android.support.annotation.Nullable;
 import com.example.fontanalyzer.Models.Detection;
 import com.example.fontanalyzer.Models.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Dao
 public interface IDetectionDAO {
 
@@ -20,4 +23,9 @@ public interface IDetectionDAO {
     @Nullable
     @Query("SELECT * FROM detections WHERE LOWER(content) like LOWER(:content)")
     LiveData<Detection> getDetectionByContent(String content);
+
+
+    @Nullable
+    @Query("SELECT * FROM detections")
+    LiveData<List<Detection>> getAllDetections();
 }

@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import com.example.fontanalyzer.Models.Detection;
 import com.example.fontanalyzer.Models.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FontViewModel extends AndroidViewModel {
@@ -19,6 +20,11 @@ public class FontViewModel extends AndroidViewModel {
         super(application);
         mRepository = new Repository(application);
 
+    }
+
+    public LiveData<List<Detection>> getAllDetections(){
+
+        return mRepository.getAllDetection();
     }
 
     public LiveData<User> getUserByEmail(String email){

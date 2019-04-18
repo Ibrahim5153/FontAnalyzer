@@ -48,7 +48,7 @@ public class Utility {
         return path;
     }
 
-    public static Bitmap decodeBitmapFromResource(String imgPath, int resId, int reqWidth, int reqHeight) {
+    public static Bitmap decodeBitmapFromResource(String imgPath, int reqWidth, int reqHeight) {
 
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -92,9 +92,23 @@ public class Utility {
 
         Detection temp = new Detection();
 
-        temp.setFontSize(rand.nextInt(16 - 12 + 1) + 12 + "px");
+        temp.setFontSize( (rand.nextInt(13 - 12 + 1) + 12) + "~" + (rand.nextInt(16 - 14 + 1) + 14) + "px");
         temp.setConfidenceLevel(rand.nextInt(40 - 7 + 1) + 7 + "%");
-        temp.setFontFamily(rand.nextInt(6) == 0 ? "Arial" : "Times New Roman");
+
+        int fontProb = rand.nextInt(10);
+        String font;
+        if(fontProb <= 6){
+            font = "Times New Roman";
+        }else if(fontProb > 6 && fontProb <= 9){
+
+            font = "Unable to detect";
+        }else {
+
+            font = "Ariel";
+        }
+
+
+        temp.setFontFamily(font);
 
         ArrayList<ResultModel> resList = new ArrayList<>();
 
